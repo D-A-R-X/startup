@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Code Stack — Startup Guide</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c10;
+            --surface: #0e1420;
+            --border: #1a2535;
+            --accent: #00e5ff;
+            --accent2: #7c3aed;
+            --accent3: #f59e0b;
+            --green: #10b981;
+            --red: #ef4444;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --card: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            padding: 5px 14px;
+            border-radius: 2px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            background: rgba(0, 229, 255, 0.05);
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 72px);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Pipeline visual */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: wrap;
+            margin-bottom: 80px;
+            padding: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .pipe-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            min-width: 90px;
+        }
+
+        .pipe-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .pipe-label {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .pipe-arrow {
+            color: var(--border);
+            font-size: 20px;
+            padding: 0 4px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 72px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            background: rgba(0, 229, 255, 0.08);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            padding: 3px 10px;
+            border-radius: 2px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .section-icon {
+            margin-left: auto;
+            font-size: 24px;
+        }
+
+        /* Cards grid */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 24px;
+            position: relative;
+            transition: border-color 0.2s, transform 0.2s;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 229, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .tool-name {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .tool-desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .badge-free {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-freemium {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent3);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .badge-paid {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .badge-oss {
+            background: rgba(124, 58, 237, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+        }
+
+        .badge-tag {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .tool-link {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .tool-link:hover {
+            opacity: 1;
+        }
+
+        /* Tip box */
+        .tip {
+            background: rgba(0, 229, 255, 0.04);
+            border: 1px solid rgba(0, 229, 255, 0.15);
+            border-left: 3px solid var(--accent);
+            padding: 16px 20px;
+            border-radius: 0 4px 4px 0;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .tip strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Stack recommendation */
+        .stack-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 32px;
+            margin-top: 60px;
+        }
+
+        .stack-box h2 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .stack-box p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 28px;
+            font-weight: 400;
+        }
+
+        .stack-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 12px 20px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .stack-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .stack-category {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stack-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stack-tool {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 2px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text);
+        }
+
+        .stack-tool.primary {
+            background: rgba(0, 229, 255, 0.08);
+            border-color: rgba(0, 229, 255, 0.2);
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+            .pipeline {
+                padding: 20px 12px;
+            }
+
+            .pipe-step {
+                min-width: 70px;
+                padding: 8px;
+            }
+
+            .pipe-arrow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">// startup dev stack 2025</div>
+            <h1>Vibe Code Tools<br>Complete Guide</h1>
+            <p>Everything you need to go from idea to production — AI coding, databases, security, APIs, deployment —
+                mostly free.</p>
+        </div>
+
+        <!-- Pipeline -->
+        <div class="pipeline">
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(0,229,255,0.1);">💡</div>
+                <span class="pipe-label">Idea</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(124,58,237,0.15);">🤖</div>
+                <span class="pipe-label">AI Code</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(16,185,129,0.1);">🗄️</div>
+                <span class="pipe-label">Database</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(245,158,11,0.1);">🔌</div>
+                <span class="pipe-label">API</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(239,68,68,0.1);">🔒</div>
+                <span class="pipe-label">Security</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(0,229,255,0.1);">🚀</div>
+                <span class="pipe-label">Deploy</span>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-step">
+                <div class="pipe-icon" style="background:rgba(124,58,237,0.15);">📊</div>
+                <span class="pipe-label">Monitor</span>
+            </div>
+        </div>
+
+        <!-- Section 1: AI Vibe Coding -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">01</span>
+                <span class="section-title">AI Vibe Coding Tools</span>
+                <span class="section-icon">🤖</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Cursor</span>
+                        <a class="tool-link" href="https://cursor.sh">cursor.sh ↗</a>
+                    </div>
+                    <p class="tool-desc">The gold standard for AI-first coding. Full VS Code fork with deeply integrated
+                        Claude & GPT-4o. Best for full-stack projects.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">VS Code fork</span>
+                        <span class="badge badge-tag">Chat + Compose</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Windsurf</span>
+                        <a class="tool-link" href="https://codeium.com/windsurf">codeium.com ↗</a>
+                    </div>
+                    <p class="tool-desc">By Codeium. Agentic AI editor that can autonomously write, run, and debug code.
+                        Very generous free tier.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Agentic</span>
+                        <span class="badge badge-tag">VS Code fork</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Bolt.new</span>
+                        <a class="tool-link" href="https://bolt.new">bolt.new ↗</a>
+                    </div>
+                    <p class="tool-desc">Build full-stack apps from a prompt in the browser. Instant preview, deploys to
+                        Netlify. Best for rapid prototyping.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">Browser-based</span>
+                        <span class="badge badge-tag">Full-stack</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">v0 by Vercel</span>
+                        <a class="tool-link" href="https://v0.dev">v0.dev ↗</a>
+                    </div>
+                    <p class="tool-desc">Generate React + Tailwind UI components from prompts. Integrates with Next.js.
+                        Incredible for frontend & landing pages.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">React/Next.js</span>
+                        <span class="badge badge-tag">UI focus</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Lovable</span>
+                        <a class="tool-link" href="https://lovable.dev">lovable.dev ↗</a>
+                    </div>
+                    <p class="tool-desc">Prompt-to-app with Supabase integration baked in. Gets you from idea to a
+                        deployed app with auth + DB very fast.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">Full-stack</span>
+                        <span class="badge badge-tag">Supabase</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Claude Code</span>
+                        <a class="tool-link" href="https://docs.claude.com">docs.claude.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Anthropic's agentic CLI tool. Reads your whole codebase, writes, runs, tests
+                        code. Best for complex multi-file work.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">CLI agent</span>
+                        <span class="badge badge-tag">Codebase-aware</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tip">
+                <strong>Startup Tip:</strong> Start with <strong>Bolt.new</strong> or <strong>Lovable</strong> for your
+                MVP prototype. Move to <strong>Cursor</strong> or <strong>Windsurf</strong> once you need real version
+                control and custom logic.
+            </div>
+        </div>
+
+        <!-- Section 2: Database -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">02</span>
+                <span class="section-title">Database & Storage</span>
+                <span class="section-icon">🗄️</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Supabase</span>
+                        <a class="tool-link" href="https://supabase.com">supabase.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Open-source Firebase alternative. PostgreSQL + Auth + Storage + Realtime + Edge
+                        Functions. Best all-in-one for startups.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">PostgreSQL</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">PlanetScale</span>
+                        <a class="tool-link" href="https://planetscale.com">planetscale.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Serverless MySQL with branching like Git. Scales to massive traffic. Great
+                        developer experience.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">MySQL</span>
+                        <span class="badge badge-tag">Serverless</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Neon</span>
+                        <a class="tool-link" href="https://neon.tech">neon.tech ↗</a>
+                    </div>
+                    <p class="tool-desc">Serverless PostgreSQL with autoscaling and branching. Scales to zero when idle
+                        — perfect for early-stage apps.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">PostgreSQL</span>
+                        <span class="badge badge-tag">Serverless</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">MongoDB Atlas</span>
+                        <a class="tool-link" href="https://mongodb.com/atlas">mongodb.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Managed NoSQL document database. 512MB free forever. Great for flexible data
+                        structures and rapid iteration.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">NoSQL</span>
+                        <span class="badge badge-tag">Document DB</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Upstash</span>
+                        <a class="tool-link" href="https://upstash.com">upstash.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Serverless Redis & Kafka. Perfect for caching, rate limiting, sessions, and
+                        queues. Free up to 10K requests/day.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Redis</span>
+                        <span class="badge badge-tag">Caching</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Cloudflare R2</span>
+                        <a class="tool-link" href="https://cloudflare.com/r2">cloudflare.com ↗</a>
+                    </div>
+                    <p class="tool-desc">S3-compatible object storage with zero egress fees. 10GB free forever. Ideal
+                        for images, files, and backups.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Object Storage</span>
+                        <span class="badge badge-tag">S3 compat</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tip">
+                <strong>Startup Tip:</strong> Use <strong>Supabase</strong> as your default — it covers database, auth,
+                file storage, and realtime in one platform with a great free tier.
+            </div>
+        </div>
+
+        <!-- Section 3: Backend & API -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">03</span>
+                <span class="section-title">Backend, API & Server</span>
+                <span class="section-icon">🔌</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Hono</span>
+                        <a class="tool-link" href="https://hono.dev">hono.dev ↗</a>
+                    </div>
+                    <p class="tool-desc">Ultrafast web framework for edge runtimes (Cloudflare Workers, Deno, Bun).
+                        Minimal, typed, and production-ready.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Edge-first</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">FastAPI</span>
+                        <a class="tool-link" href="https://fastapi.tiangolo.com">fastapi.tiangolo.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Python API framework with automatic OpenAPI docs. Best if you're building ML/AI
+                        backends. Typed, fast, and beloved.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Python</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">tRPC</span>
+                        <a class="tool-link" href="https://trpc.io">trpc.io ↗</a>
+                    </div>
+                    <p class="tool-desc">End-to-end typesafe APIs without schemas or code gen. If your stack is
+                        TypeScript, this eliminates a ton of boilerplate.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">TypeScript</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Cloudflare Workers</span>
+                        <a class="tool-link" href="https://workers.cloudflare.com">workers.cloudflare.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Serverless edge compute. 100K requests/day free. Deploy JS/TS functions
+                        globally with zero cold starts.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Edge</span>
+                        <span class="badge badge-tag">Serverless</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Railway</span>
+                        <a class="tool-link" href="https://railway.app">railway.app ↗</a>
+                    </div>
+                    <p class="tool-desc">Deploy any server (Node, Python, Go, Docker) in seconds. Persistent containers
+                        with $5/mo free credit. GitHub auto-deploy.</p>
+                    <div class="badges">
+                        <span class="badge badge-freemium">Freemium</span>
+                        <span class="badge badge-tag">Any language</span>
+                        <span class="badge badge-tag">Docker</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Inngest</span>
+                        <a class="tool-link" href="https://inngest.com">inngest.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Event-driven background jobs and workflows. Handle async tasks, queues, cron
+                        jobs with retries. Free tier available.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Background Jobs</span>
+                        <span class="badge badge-tag">Queues</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tip">
+                <strong>Startup Tip:</strong> For a JS/TS startup, use <strong>Next.js API routes + tRPC</strong> to
+                start. Add <strong>Cloudflare Workers</strong> for high-traffic edge endpoints. For Python/AI workloads,
+                use <strong>FastAPI on Railway</strong>.
+            </div>
+        </div>
+
+        <!-- Section 4: Authentication -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">04</span>
+                <span class="section-title">Authentication & Auth</span>
+                <span class="section-icon">🔑</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Clerk</span>
+                        <a class="tool-link" href="https://clerk.com">clerk.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Drop-in auth with beautiful pre-built UI components. Social login, MFA,
+                        organizations. Free up to 10,000 MAU.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">React/Next.js</span>
+                        <span class="badge badge-tag">Pre-built UI</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Auth.js (NextAuth)</span>
+                        <a class="tool-link" href="https://authjs.dev">authjs.dev ↗</a>
+                    </div>
+                    <p class="tool-desc">The open-source auth solution for Next.js. Supports 50+ OAuth providers. No
+                        vendor lock-in, self-hostable.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Next.js</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Supabase Auth</span>
+                        <a class="tool-link" href="https://supabase.com/auth">supabase.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Built-in auth in Supabase. Email, social, magic links, phone OTP. If you're
+                        already on Supabase, use this.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Integrated</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Better Auth</span>
+                        <a class="tool-link" href="https://better-auth.com">better-auth.com ↗</a>
+                    </div>
+                    <p class="tool-desc">New framework-agnostic auth library for TypeScript. Comprehensive, self-hosted,
+                        and free. Growing quickly.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">TypeScript</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Web Security -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">05</span>
+                <span class="section-title">Web Security</span>
+                <span class="section-icon">🔒</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Cloudflare</span>
+                        <a class="tool-link" href="https://cloudflare.com">cloudflare.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Free WAF, DDoS protection, CDN, bot management, and SSL. Every startup should
+                        use Cloudflare in front of their app.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">WAF</span>
+                        <span class="badge badge-tag">DDoS</span>
+                        <span class="badge badge-tag">CDN + SSL</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Snyk</span>
+                        <a class="tool-link" href="https://snyk.io">snyk.io ↗</a>
+                    </div>
+                    <p class="tool-desc">Scan your code and dependencies for vulnerabilities. Free tier for open source
+                        and small teams. Integrates with GitHub.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Vuln Scanning</span>
+                        <span class="badge badge-tag">CI/CD</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">OWASP ZAP</span>
+                        <a class="tool-link" href="https://zaproxy.org">zaproxy.org ↗</a>
+                    </div>
+                    <p class="tool-desc">Free open-source web app security scanner. Find XSS, SQLi, CSRF vulnerabilities
+                        automatically. Industry standard.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Pen Testing</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Arcjet</span>
+                        <a class="tool-link" href="https://arcjet.com">arcjet.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Developer-first security SDK for Next.js/Node. Rate limiting, bot protection,
+                        email validation in a few lines of code.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Rate Limiting</span>
+                        <span class="badge badge-tag">Bot Protection</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Let's Encrypt</span>
+                        <a class="tool-link" href="https://letsencrypt.org">letsencrypt.org ↗</a>
+                    </div>
+                    <p class="tool-desc">Free, automated SSL/TLS certificates. Most hosting platforms (Vercel, Railway,
+                        etc.) handle this automatically for you.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">SSL/TLS</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Doppler</span>
+                        <a class="tool-link" href="https://doppler.com">doppler.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Secrets management for teams. Never put API keys in .env files again. Syncs
+                        secrets across all environments. Free for individuals.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Secrets Mgmt</span>
+                        <span class="badge badge-tag">Env Vars</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tip">
+                <strong>Security Checklist:</strong> Always enable <strong>Cloudflare</strong> (free WAF + DDoS), use
+                <strong>HTTPS everywhere</strong>, never hardcode secrets (use <strong>Doppler</strong>), run
+                <strong>Snyk</strong> in CI, and validate all user inputs. Follow OWASP Top 10.
+            </div>
+        </div>
+
+        <!-- Section 6: Frontend & Deployment -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">06</span>
+                <span class="section-title">Frontend Frameworks & Deployment</span>
+                <span class="section-icon">🚀</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Next.js</span>
+                        <a class="tool-link" href="https://nextjs.org">nextjs.org ↗</a>
+                    </div>
+                    <p class="tool-desc">The go-to React framework for production. SSR, SSG, API routes, edge functions.
+                        Deploys seamlessly to Vercel.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">React</span>
+                        <span class="badge badge-tag">Full-stack</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Vercel</span>
+                        <a class="tool-link" href="https://vercel.com">vercel.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Best platform for deploying Next.js (and any JS framework). GitHub auto-deploy,
+                        preview URLs, edge network. Very generous free tier.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Next.js</span>
+                        <span class="badge badge-tag">Edge CDN</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Netlify</span>
+                        <a class="tool-link" href="https://netlify.com">netlify.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Deploy static sites and full-stack apps. 100GB bandwidth free. Great for React,
+                        Vue, Svelte, and JAMstack projects.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Static + SSR</span>
+                        <span class="badge badge-tag">Functions</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Coolify</span>
+                        <a class="tool-link" href="https://coolify.io">coolify.io ↗</a>
+                    </div>
+                    <p class="tool-desc">Self-hosted Heroku/Vercel alternative. Deploy apps, databases, and services on
+                        your own VPS. Open source and free.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Self-hosted</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Fly.io</span>
+                        <a class="tool-link" href="https://fly.io">fly.io ↗</a>
+                    </div>
+                    <p class="tool-desc">Run containers globally close to users. Deploy any Docker app. Free allowance
+                        for small apps. Great for full-stack + websockets.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Docker</span>
+                        <span class="badge badge-tag">Global edge</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">GitHub Actions</span>
+                        <a class="tool-link" href="https://github.com/features/actions">github.com ↗</a>
+                    </div>
+                    <p class="tool-desc">CI/CD automation directly in your repo. Run tests, linting, and deployments on
+                        every push. 2000 free minutes/month.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">CI/CD</span>
+                        <span class="badge badge-tag">Automation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Monitoring -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">07</span>
+                <span class="section-title">Monitoring, Analytics & Logging</span>
+                <span class="section-icon">📊</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Sentry</span>
+                        <a class="tool-link" href="https://sentry.io">sentry.io ↗</a>
+                    </div>
+                    <p class="tool-desc">Error tracking and performance monitoring. Get alerts when your app crashes.
+                        Free for small teams. Works with any language.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Error Tracking</span>
+                        <span class="badge badge-tag">Performance</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">PostHog</span>
+                        <a class="tool-link" href="https://posthog.com">posthog.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Open-source product analytics, session recording, feature flags, and A/B
+                        testing. 1M events/month free. Self-hostable.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Product Analytics</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Betterstack</span>
+                        <a class="tool-link" href="https://betterstack.com">betterstack.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Uptime monitoring, incident management, and structured logging. Beautiful
+                        dashboard. Free tier for basic monitoring.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Uptime</span>
+                        <span class="badge badge-tag">Logging</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Axiom</span>
+                        <a class="tool-link" href="https://axiom.co">axiom.co ↗</a>
+                    </div>
+                    <p class="tool-desc">Serverless log management. Index and query huge volumes of logs cheaply. Free
+                        tier at 500GB ingest/month. Works great with Vercel.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Logging</span>
+                        <span class="badge badge-tag">Vercel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Payments & Email -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-num">08</span>
+                <span class="section-title">Payments, Email & Other Essentials</span>
+                <span class="section-icon">💳</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Stripe</span>
+                        <a class="tool-link" href="https://stripe.com">stripe.com ↗</a>
+                    </div>
+                    <p class="tool-desc">The standard for payments. Accept cards, subscriptions, invoices. Free to start
+                        — only pay 2.9% + 30¢ per transaction.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Pay-per-use</span>
+                        <span class="badge badge-tag">Payments</span>
+                        <span class="badge badge-tag">Subscriptions</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Resend</span>
+                        <a class="tool-link" href="https://resend.com">resend.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Modern email API built for developers. Send transactional emails with React
+                        templates. 3000 emails/month free.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-tag">Email API</span>
+                        <span class="badge badge-tag">React Email</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Trigger.dev</span>
+                        <a class="tool-link" href="https://trigger.dev">trigger.dev ↗</a>
+                    </div>
+                    <p class="tool-desc">Open-source background jobs and workflows in TypeScript. Long-running tasks,
+                        scheduled jobs, and AI pipelines. Free self-hostable.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free Tier</span>
+                        <span class="badge badge-oss">Open Source</span>
+                        <span class="badge badge-tag">Background Jobs</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-top">
+                        <span class="tool-name">Cloudflare Turnstile</span>
+                        <a class="tool-link" href="https://cloudflare.com/turnstile">cloudflare.com ↗</a>
+                    </div>
+                    <p class="tool-desc">Free CAPTCHA alternative that's privacy-friendly and not annoying. Protect
+                        forms and APIs from bots without any cost.</p>
+                    <div class="badges">
+                        <span class="badge badge-free">Free</span>
+                        <span class="badge badge-tag">CAPTCHA</span>
+                        <span class="badge badge-tag">Bot protection</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommended Stack -->
+        <div class="stack-box">
+            <h2>⚡ Recommended Zero-to-Production Free Stack</h2>
+            <p>The most cost-effective, modern stack for a startup to build and deploy a full product in 2025.</p>
+
+            <div class="stack-row">
+                <span class="stack-category">AI Coding</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Windsurf (free)</span>
+                    <span class="stack-tool">Bolt.new (prototype)</span>
+                    <span class="stack-tool">v0.dev (UI)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Frontend</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Next.js + TypeScript</span>
+                    <span class="stack-tool">Tailwind CSS</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Backend</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Next.js API routes</span>
+                    <span class="stack-tool">tRPC</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Database</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Supabase (PostgreSQL)</span>
+                    <span class="stack-tool">Upstash Redis</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Auth</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Clerk (free 10K MAU)</span>
+                    <span class="stack-tool">or Supabase Auth</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Security</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Cloudflare (WAF + SSL)</span>
+                    <span class="stack-tool">Arcjet (rate limit)</span>
+                    <span class="stack-tool">Doppler (secrets)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Storage</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Cloudflare R2 (10GB free)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Deploy</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Vercel (free tier)</span>
+                    <span class="stack-tool">GitHub Actions (CI/CD)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Email</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Resend (3K/mo free)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Monitoring</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Sentry (errors)</span>
+                    <span class="stack-tool">PostHog (analytics)</span>
+                    <span class="stack-tool">Betterstack (uptime)</span>
+                </div>
+            </div>
+            <div class="stack-row">
+                <span class="stack-category">Payments</span>
+                <div class="stack-tools">
+                    <span class="stack-tool primary">Stripe (pay-per-use)</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>// BUILT FOR STARTUPS · MOSTLY FREE · 2025 //</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>
